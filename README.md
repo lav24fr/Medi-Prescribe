@@ -1,6 +1,6 @@
-# MediScribe-AI - Advanced Medical Transcription & Clinical Assistant
+# Medi Prescribe AI - Advanced Medical Transcription & Clinical Assistant
 
-A comprehensive, AI-powered medical transcription and clinical decision support system designed for modern healthcare professionals. MediScribe-AI allows doctors to record patient consultations, automatically transcribe them with high accuracy, generate structured medical summaries, construct patient knowledge graphs, and proactively flag clinical alerts.
+A comprehensive, AI-powered medical transcription and clinical decision support system designed for modern healthcare professionals. Medi Prescribe AI allows doctors to record patient consultations, automatically transcribe them with high accuracy, generate structured medical summaries, construct patient knowledge graphs, and proactively flag clinical alerts.
 
 ## 🚀 Key Features
 
@@ -118,7 +118,7 @@ Access the application:
 
 ### AI Analysis & Summarization
 1. Once transcription is complete, click **Generate Summary**.
-2. MediScribe-AI will extract medical entities, build the structured clinical note, and generate the simplified Patient-Facing Summary.
+2. Medi Prescribe AI will extract medical entities, build the structured clinical note, and generate the simplified Patient-Facing Summary.
 3. If new medications are prescribed, check the **Smart E-Prescription** card.
 4. If a drug interaction or allergy is detected based on the patient's history, a **Clinical Decision Support Alert** will be flagged immediately on the dashboard.
 5. Export the simplified summary by clicking **Export PDF**.

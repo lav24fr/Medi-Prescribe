@@ -1,17 +1,19 @@
 jest.mock('../../config', () => ({
-    geminiApiKey: 'MOCKED_KEY',
+    groqApiKey: 'MOCKED_KEY',
     graphDb: { uri: 'bolt://mock:7687', user: 'u', password: 'p' },
 }));
 
-const mockGenerateContent = jest.fn();
+const mockGroqCreate = jest.fn();
 
-jest.mock('@google/generative-ai', () => ({
-  GoogleGenerativeAI: jest.fn(() => ({
-    getGenerativeModel: jest.fn(() => ({
-      generateContent: mockGenerateContent,
-    })),
-  })),
-}));
+jest.mock('groq-sdk', () => {
+  return jest.fn().mockImplementation(() => ({
+    chat: {
+      completions: {
+        create: mockGroqCreate
+      }
+    }
+  }));
+});
 
 const mockMongooseChain = {
     populate: jest.fn().mockReturnThis(), 
@@ -41,8 +43,8 @@ describe('SummaryService with RAG', () => {
     
     mockMongooseChain.exec.mockResolvedValue(mockSessionData);
     
-    mockGenerateContent.mockResolvedValue({
-        response: { text: () => '{ "chief_complaint": "Test", "history_of_present_illness": "Test", "assessment": "Test", "plan": "Test" }' }
+    mockGroqCreate.mockResolvedValue({
+        choices: [{ message: { content: '{ "chief_complaint": "Test", "history_of_present_illness": "Test", "assessment": "Test", "plan": "Test", "patientSummary": "Test", "prescriptions": [], "clinicalAlerts": [] }' } }]
     });
     
     graphService.retrievePatientContext.mockResolvedValue('');
@@ -55,7 +57,7 @@ describe('SummaryService with RAG', () => {
 
     expect(graphService.retrievePatientContext).toHaveBeenCalledWith('pat_789');
 
-    const promptSentToLLM = mockGenerateContent.mock.calls[0][0]; 
+    const promptSentToLLM = mockGroqCreate.mock.calls[0][0].messages[0].content; 
     expect(promptSentToLLM).toContain("Patient's Clinical History (from RAG):");
     expect(promptSentToLLM).toContain("- Known Diagnoses: Asthma");
     expect(promptSentToLLM).toContain("Transcript: Patient has a cough.");
@@ -64,7 +66,7 @@ describe('SummaryService with RAG', () => {
   it('should not include context in the prompt if none is found', async () => {
     await summaryService.generateSummary('session123', 'summary456');
 
-    const promptSentToLLM = mockGenerateContent.mock.calls[0][0];
+    const promptSentToLLM = mockGroqCreate.mock.calls[0][0].messages[0].content;
     expect(promptSentToLLM).not.toContain("Patient's Clinical History (from RAG):");
     expect(promptSentToLLM).toContain("Transcript: Patient has a cough.");
   });

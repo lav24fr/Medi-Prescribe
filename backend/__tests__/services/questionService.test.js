@@ -1,18 +1,20 @@
 
 jest.mock('../../config', () => ({
-    geminiApiKey: 'MOCKED_KEY', 
+    groqApiKey: 'MOCKED_KEY', 
     graphDb: { uri: 'bolt://mock:7687', user: 'u', password: 'p' }, 
 }));
 
-const mockGenerateContent = jest.fn();
+const mockGroqCreate = jest.fn();
 
-jest.mock('@google/generative-ai', () => ({
-  GoogleGenerativeAI: jest.fn(() => ({
-    getGenerativeModel: jest.fn(() => ({
-      generateContent: mockGenerateContent,
-    })),
-  })),
-}));
+jest.mock('groq-sdk', () => {
+  return jest.fn().mockImplementation(() => ({
+    chat: {
+      completions: {
+        create: mockGroqCreate
+      }
+    }
+  }));
+});
 
 const mockMongooseChain = {
     populate: jest.fn().mockReturnThis(), 
@@ -51,8 +53,8 @@ describe('QuestionService with RAG', () => {
     
     mockMongooseChain.exec.mockResolvedValue(mockSessionData);
     
-    mockGenerateContent.mockResolvedValue({
-      response: { text: () => '[]' }
+    mockGroqCreate.mockResolvedValue({
+      choices: [{ message: { content: '{"questions":[]}' } }]
     });
     
     graphService.retrievePatientContext.mockResolvedValue(mockContext);
@@ -63,9 +65,9 @@ describe('QuestionService with RAG', () => {
 
     expect(graphService.retrievePatientContext).toHaveBeenCalledWith('pat_789');
     
-    expect(mockGenerateContent).toHaveBeenCalledTimes(3);
+    expect(mockGroqCreate).toHaveBeenCalledTimes(3);
 
-    const prompts = mockGenerateContent.mock.calls.map(call => call[0]);
+    const prompts = mockGroqCreate.mock.calls.map(call => call[0].messages[0].content);
     prompts.forEach(prompt => {
         expect(prompt).toContain(mockContext);
     });
@@ -91,7 +93,7 @@ describe('QuestionService with RAG', () => {
 
     expect(graphService.retrievePatientContext).not.toHaveBeenCalled();
 
-    const clinicalPrompt = mockGenerateContent.mock.calls[0][0];
+    const clinicalPrompt = mockGroqCreate.mock.calls[0][0].messages[0].content;
     
     expect(clinicalPrompt).not.toContain("PATIENT HISTORY CONTEXT");
     expect(clinicalPrompt).toContain('Transcript: Anonymous talk.'); 

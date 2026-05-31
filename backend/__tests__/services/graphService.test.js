@@ -61,6 +61,8 @@ describe('GraphService', () => {
             case 'sessions': return ['sess_abc', 'sess_def'];
             case 'diagnoses': return ['Diabetes', 'Asthma'];
             case 'symptoms': return ['Fatigue'];
+            case 'medications': return [];
+            case 'allergies': return [];
             default: return null;
           }
         }),

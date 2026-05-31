@@ -176,8 +176,8 @@ function AppContent() {
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <AppBar position="static" elevation={1}>
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            MediScribe AI - Medical Transcription System
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 'bold' }}>
+            Medi Prescribe AI - Medical Transcription System
           </Typography>
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
             {location.pathname !== "/sessions" && (
