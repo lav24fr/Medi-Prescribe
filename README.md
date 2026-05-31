@@ -73,8 +73,8 @@ Ensure you have the following installed before proceeding:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/lav24fr/MediScribe-AI.git
-cd MediScribe-AI
+git clone https://github.com/lav24fr/Medi-Prescribe
+cd Medi-Prescribe
 ```
 
 ### 2. Environment Setup
