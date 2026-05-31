@@ -1,4 +1,4 @@
-# MediScribe AI - Medical Transcription & Summary System
+# Medi Prescribe - Medical Transcription & Summary System
 
 A comprehensive medical transcription and AI-powered summary generation system designed for healthcare professionals. This system allows doctors to record patient consultations, automatically transcribe them using Google Cloud Speech-to-Text, and generate structured medical summaries using Google Gemini.
 
